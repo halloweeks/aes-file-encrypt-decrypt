@@ -15,6 +15,11 @@ void EncryptData(uint8_t *data, uint32_t size, AES_CTX *ctx) {
 }
 
 int main(int argc, const char *argv[]) {
+	if (argc != 3) {
+		fprintf(stderr, "Usage: %s <input file> <output file>\n", argv[0]);
+		return 1;
+	}
+	
 	uint8_t key[AES_KEY_SIZE];
 	memset(key, 0x11, 16);
 	
