@@ -8,13 +8,6 @@
 
 #define CHUNK_SIZE 65536 // Size of each chunk to be read from the file
 
-// Function to encrypt a chunk of data using AES-128-CBC
-void EncryptData(uint8_t *data, uint32_t size, AES_CTX *ctx) {
-    for (uint32_t offset = 0; offset < size; offset += AES_BLOCK_SIZE) {
-        AES_Encrypt(ctx, data + offset, data + offset); // Encrypt AES_BLOCK_SIZE bytes at a time
-    }
-}
-
 int main(int argc, const char *argv[]) {
     // Check for correct number of command-line arguments
     if (argc != 3) {
@@ -42,7 +35,7 @@ int main(int argc, const char *argv[]) {
 
     uint8_t chunk[CHUNK_SIZE + AES_BLOCK_SIZE]; // Buffer to hold each chunk of data
     AES_CTX ctx;
-    AES_EncryptInit(&ctx, key, key); // Initialize AES context for encryption
+    AES_EncryptInit(&ctx, key, key /*iv*/); // Initialize AES context for encryption
 
     ssize_t len;
 
@@ -54,7 +47,7 @@ int main(int argc, const char *argv[]) {
             memset(chunk + len, padding_size, padding_size);
             len += padding_size;
         }
-        EncryptData(chunk, len, &ctx); // Encrypt the chunk
+        AES_Encrypt(&ctx, chunk, len, chunk); // Encrypt the chunk
         write(fout, chunk, len); // Write the encrypted chunk to the output file
     }
 
