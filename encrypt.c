@@ -21,7 +21,7 @@ int main(int argc, const char *argv[]) {
 	}
 	
 	uint8_t key[AES_KEY_SIZE];
-	memset(key, 0x11, 16);
+	memset(key, 0x11, AES_KEY_SIZE);
 	
 	int fin = open(argv[1], O_RDONLY);
 	
@@ -38,7 +38,7 @@ int main(int argc, const char *argv[]) {
 		return 1;
 	}
 	
-	uint8_t chunk[CHUNK_SIZE];
+	uint8_t chunk[CHUNK_SIZE + AES_BLOCK_SIZE];
 	AES_CTX ctx;
 	AES_EncryptInit(&ctx, key, key);
 	
