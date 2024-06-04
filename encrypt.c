@@ -5,8 +5,9 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include "AES_128_CBC.h"
+#include <time.h>
 
-#define CHUNK_SIZE 65536 // Size of each chunk to be read from the file
+#define CHUNK_SIZE (1024 * 256) // Size of each chunk to be read from the file
 
 int main(int argc, const char *argv[]) {
     // Check for correct number of command-line arguments
@@ -14,6 +15,8 @@ int main(int argc, const char *argv[]) {
         fprintf(stderr, "Usage: %s <input file> <output file>\n", argv[0]);
         return 1;
     }
+    
+    clock_t t0 = clock();
 
     uint8_t key[AES_KEY_SIZE];
     memset(key, 0x11, AES_KEY_SIZE); // Initialize the AES key with a constant value
@@ -24,6 +27,9 @@ int main(int argc, const char *argv[]) {
         printf("Failed to open input file!\n");
         return 1;
     }
+    
+    int64_t total = lseek(fin, 0, SEEK_END);
+    lseek(fin, 0, SEEK_SET); 
 
     // Open the output file for writing
     int fout = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -54,5 +60,10 @@ int main(int argc, const char *argv[]) {
     // Close the input and output files
     close(fin);
     close(fout);
+    
+    clock_t t1 = clock();
+    double time = ((double)(t1 - t0)) / CLOCKS_PER_SEC;
+    const double MB = 1024.0 * 1024.0;
+    printf("Processed %.2f MB, speed = %.2f MB/s in %f seconds\n", total / MB, total / MB / time, time);
     return 0;
 }
