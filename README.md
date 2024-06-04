@@ -41,8 +41,8 @@ git clone https://github.com/halloweeks/aes-file-encrypt-decrypt.git
 
 ```
 cd aes-file-encrypt-decrypt
-gcc encrypt.c -o encrypt
-gcc decrypt.c -o decrypt
+gcc encrypt.c -o encrypt -O2
+gcc decrypt.c -o decrypt -O2
 ```
 
 ## Usage
